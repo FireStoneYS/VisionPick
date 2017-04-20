@@ -41,7 +41,7 @@ void *son_thread(void * data){
 	time_t start,stop;
 
 	start = time(NULL);
-	ParameterReader pd("/home/abds/系统文件备份/HypothesesParameters.txt");
+	ParameterReader pd("HypothesesParameters.txt");
 	HypoPara hp(pd);
 	ofstream writefile(pd.getData( "svm_directory" ).c_str(),ios::trunc);
 	std::vector<PointCloud::Ptr> model;
