@@ -15,6 +15,7 @@
 #include "Serial.h"
 #include "SVM.h"
 #include "socketmove.h"
+#include "Calibration.h"
 
 #include <omp.h>
 
@@ -29,6 +30,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 #define IS_PARALLEL_THREADS  //多线程，注释掉则点云处理为单线程
+#define BEEN_CALIBRATED		//注释后进行桌面标定
 
 using namespace std;
 
@@ -306,9 +308,7 @@ void *son_thread(void * data){
 	thread_over =1;
 	pthread_exit(0);
 }
-
-int main(){
-
+void VisionPick(){
 	char key =0;
 
 	xn::Context            	context;
@@ -356,6 +356,14 @@ int main(){
 	}
 	view.close();
 	np.stop();
+}
+int main(){
+
+#ifdef BEEN_CALIBRATED
+	VisionPick();
+#else
+	TablePosition();
+#endif
 }
 
 
