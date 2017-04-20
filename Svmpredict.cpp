@@ -4,7 +4,7 @@
 #include <string.h>
 #include <errno.h>
 #include "SVM.h"
-#include "SaveOption.h"
+
 
 int print_null(const char *s,...) {return 0;}
 
@@ -171,11 +171,11 @@ void exit_with_help()
 	exit(1);
 }
 
-int predict_class()
+int predict_class(ParameterReader &pd)
 {
 	FILE *input, *output;
 	int i;
-	ParameterReader pd("/home/abds/系统文件备份/HypothesesParameters.txt");
+
 
 	input = fopen(pd.getData( "svm_directory" ).c_str(),"r");
 	if(input == NULL)

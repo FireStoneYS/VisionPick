@@ -119,7 +119,7 @@ void *son_thread(void * data){
 	}
 	writefile.close();
 	cout<<vfhvector.size()<<endl;
-	predict_class();
+	predict_class(pd);
 	std::ifstream fin( pd.getData( "svm_output" ).c_str());
 	std::vector<int> number_vector;
 	while(!fin.eof()){

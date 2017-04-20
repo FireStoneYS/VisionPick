@@ -10,6 +10,8 @@
 #ifndef _LIBSVM_H
 #define _LIBSVM_H
 
+#include "SaveOption.h"
+
 #define LIBSVM_VERSION 322
 
 #ifdef __cplusplus
@@ -106,7 +108,7 @@ int svm_check_probability_model(const struct svm_model *model);
 
 void svm_set_print_string_function(void (*print_func)(const char *));
 
-int predict_class();
+int predict_class(ParameterReader &pd);
 
 #ifdef __cplusplus
 }
