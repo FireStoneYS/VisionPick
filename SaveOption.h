@@ -55,7 +55,7 @@ void SaveDoublePitcure(cv::Mat &bgr1,cv::Mat &depth1,cv::Mat &bgr2,cv::Mat &dept
 void SaveSinglePointCloud(cv::Mat &bgr,cv::Mat &depth,char* name);
 void SaveDoublePointCloud(cv::Mat &bgr1,cv::Mat &depth1,cv::Mat &bgr2,cv::Mat &depth2,char* name);
 Eigen::Matrix4f Camera2Table();
-
+Eigen::Matrix4f Table2Manipulate();
 class ParameterReader
 {
 	public:
