@@ -51,7 +51,7 @@ void *son_thread(void * data){
 	for(int i =1 ; i <= 5; i++){
 		PointCloud::Ptr model_temp(new PointCloud);
 		char directory[512];
-		sprintf(directory,"/home/abds/study/stl/%d.pcd",i);
+		sprintf(directory,"model/%d.pcd",i);
 		pcl::io::loadPCDFile(directory,*model_temp);
 		model.push_back(model_temp);
 	}
@@ -234,75 +234,14 @@ void *son_thread(void * data){
 		thread_over =1;
 		pthread_exit(0);
 	}
-	prepareformove(csk);
-	Eigen::Vector4f target,corner;
-	Eigen::Matrix4f table2manipulate;
-	corner<<-0.362,0.05,0,1;
-	table2manipulate<<
-			-0.469471,0.882947,0,0.375,
-			-0.882947,-0.469471,0,-0.16,
-			0,0,1,0.24,
-			0,0,0,1;
-	corner = table2manipulate*corner;
-	char biaozhi;
-	HandControl hc;
+
 	for(std::vector<TargetPose>::iterator it = targetpose_vector.begin(); it != targetpose_vector.end();it++){
-		cout<<"Model "<<it->number+1<<endl;
-
-		switch(it->number){
-			case 3:{
-				Eigen::Vector4f Z;
-				Z<<0,0,1,0;
-				float angle=acos(Z.dot(it->z_axis)/it->z_axis.norm())/PI*180;
-				cout<<angle<<endl;
-				if(abs(angle) <20 || abs(angle) >160){
-					cout<<it->centroid<<endl;
-					cout<<it->x_axis<<endl;
-				}
-				else{
-					cout<<it->centroid<<endl;
-					cout<<it->z_axis<<endl;
-				}
-			}break;
-			case 4:cout<<it->centroid<<endl;break;
-			default:cout<<it->centroid<<endl;
-					cout<<it->z_axis<<endl;
-					break;
-		}
-		target = table2manipulate* it->centroid;
-		if(it->number == 3 || it->number==4){
-			hc.TriangleOpen();
-		}
-		else{
-			hc.ParrelOpen();
-		}
-		socketmove(csk,target[0],target[1],target[2]+0.15);
-		sleep(3);
-		socketmove(csk,target[0],target[1],target[2]);
-		sleep(1);
-		if(it->number == 3 || it->number==4){
-			hc.TrianglePick();
-		}
-		else{
-			hc.ParrelPick();
-		}
-
-		sleep(2);
-		socketmove(csk,target[0],target[1],target[2]+0.15);
-		sleep(3);
-		socketmove(csk,corner[0],corner[1],target[2]+0.15);
-		sleep(3);
-		socketmove(csk,corner[0],corner[1],target[2]);
-		sleep(1);
-		if(it->number == 3 || it->number==4){
-			hc.TriangleOpen();
-		}
-		else{
-			hc.ParrelOpen();
-		}
-		sleep(2);
-		socketmove(csk,corner[0],corner[1],target[2]+0.15);
-		sleep(3);
+//		if(it->number < 3){
+//			linearpick(csk,*it);
+//		}
+//		else{
+			symcenterpick(csk,*it);
+//		}
 	}
 	socketclose(csk);
 	thread_over =1;
