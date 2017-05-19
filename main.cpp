@@ -26,7 +26,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 
 #define IS_PARALLEL_THREADS  //多线程，注释掉则点云处理为单线程
@@ -48,7 +49,7 @@ void *son_thread(void * data){
 	ofstream writefile(pd.getData( "svm_directory" ).c_str(),ios::trunc);
 	std::vector<PointCloud::Ptr> model;
 
-	for(int i =1 ; i <= 5; i++){
+	for(int i =1 ; i <= 6; i++){
 		PointCloud::Ptr model_temp(new PointCloud);
 		char directory[512];
 		sprintf(directory,"model/%d.pcd",i);
@@ -100,8 +101,6 @@ void *son_thread(void * data){
 
 	std::vector<pcl::PointCloud<pcl::VFHSignature308>::Ptr> vfhvector;
 	for(std::vector<PointCloud::Ptr>::iterator it = cloud_indices.begin();it != cloud_indices.end();++it){
-		cout<<"共"<<(*it)->points.size()<<"点"<<endl;
-
 		/********************************
 		 *
 		 * 测试cvfh
@@ -120,7 +119,6 @@ void *son_thread(void * data){
 		writefile<<endl;
 	}
 	writefile.close();
-	cout<<vfhvector.size()<<endl;
 	predict_class(pd);
 	std::ifstream fin( pd.getData( "svm_output" ).c_str());
 	std::vector<int> number_vector;
@@ -134,7 +132,7 @@ void *son_thread(void * data){
 		std::string score_str = str.substr( pos+1, str.length() );
 		float score =atof(score_str.c_str());
 		int number ;
-		if(score < 0.9){
+		if(score < 0.6){
 			number = 0;
 		}
 		else{
@@ -175,7 +173,6 @@ void *son_thread(void * data){
 		PointCloud::Ptr object_filter(new PointCloud);
 		object_filter = UniformSampling(cloud_indices[i],0.005f);
 		int ModelNumber= number_vector[i]-1;
-		cout<<ModelNumber<<endl;
 		model_transform = myPFHRGB_Registration(model[ModelNumber],object_filter,Ti);
 		for(int j= 0 ; j<20 ;j++){
 			model_transform = ICP_test(model[ModelNumber],model_transform,Ti);
@@ -212,8 +209,6 @@ void *son_thread(void * data){
 		x_axis =Camera2Table()* x_axis;
 		y_axis =Camera2Table()* y_axis;
 		z_axis =Camera2Table()* z_axis;
-		cout<<center<<endl;
-		cout<<ModelNumber<<endl;
 
 		TargetPose targetpose_temp;
 		targetpose_temp.number=ModelNumber;
@@ -236,11 +231,12 @@ void *son_thread(void * data){
 	}
 
 	for(std::vector<TargetPose>::iterator it = targetpose_vector.begin(); it != targetpose_vector.end();it++){
+		Sorting(csk,*it);
 //		if(it->number < 3){
 //			linearpick(csk,*it);
 //		}
 //		else{
-			symcenterpick(csk,*it);
+//			symcenterpick(csk,*it);
 //		}
 	}
 	socketclose(csk);

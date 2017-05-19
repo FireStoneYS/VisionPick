@@ -5,7 +5,7 @@
  *      Author: abds
  */
 
-
+#include <math.h>
 #include "SaveOption.h"
 
 
@@ -155,19 +155,33 @@ void SaveDoublePointCloud(cv::Mat &bgr1,cv::Mat &depth1,cv::Mat &bgr2,cv::Mat &d
 Eigen::Matrix4f Camera2Table(){
 	Eigen::Matrix4f out;
 	out<<
-			 -0.0345383  ,  0.761445  , -0.647308  ,  0.548319,
-			   0.998637 ,0.000935197  , -0.052184   ,  0.31564,
-			 -0.0391299 ,  -0.648228  ,  -0.76044  ,  0.535564,
-			          0    ,      -0      ,     0     ,      1;
+			-0.0193834 ,  0.773462 , -0.633547  , 0.559001,
+			  0.998929 ,-0.0116506 ,-0.0447859  , 0.297393,
+			-0.0420214 , -0.633736 , -0.772407  ,    0.534,
+			         0  ,       -0  ,        0  ,        1;
 	return out;
 }
 Eigen::Matrix4f Table2Manipulate(){
+	Eigen::Vector3f origin_poistion,right_position,left_position,x_positive,x_negative;
+	origin_poistion << 0.315,-0.15,0.24;
+	right_position << 0.12,-0.51,0.24;
+	left_position << 0.495,0.205,0.24;
+	x_positive = right_position - origin_poistion;
+	x_negative = left_position - origin_poistion;
+	double theta1 = acos(x_positive.dot(Eigen::Vector3f(1,0,0)) /x_positive.norm());
+	double theta2 = acos(x_negative.dot(Eigen::Vector3f(-1,0,0)) /x_negative.norm());
+	double theta = -(theta1+theta2)/2;
+//	cout<<theta<<endl;
+	Eigen::AngleAxisf rotation(theta,Eigen::Vector3f(0,0,1));
+	Eigen::Matrix3f rotation_matrix = rotation.toRotationMatrix();
 	Eigen::Matrix4f out;
-	out<<
-			-0.469471,0.882947,0,0.375,
-			-0.882947,-0.469471,0,-0.16,
-			0,0,1,0.24,
-			0,0,0,1;
+	for(int i = 0 ; i <3 ;i++)
+		for(int j = 0 ; j < 3;j++)
+			out(i,j)= rotation_matrix(i,j);
+	out(0,3) = origin_poistion[0];
+	out(1,3) = origin_poistion[1];
+	out(2,3) = origin_poistion[2];
+	out(3,3) = 1;
 	return out;
 }
 

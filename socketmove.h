@@ -9,6 +9,7 @@
 #define SOCKETMOVE_H_
 
 Eigen::Vector3f rotationvector(Eigen::Vector4f dst4f);
+void Sorting(int&csk,TargetPose &tp);
 void linearpick(int&csk,TargetPose &tp);
 void symcenterpick(int&csk,TargetPose &tp);
 

@@ -8,7 +8,7 @@
 #ifndef SAVEOPTION_H_
 #define SAVEOPTION_H_
 
-#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>

@@ -182,7 +182,7 @@ PointCloud::Ptr myPFHRGB_Registration(PointCloud::Ptr cloud1,PointCloud::Ptr clo
 	pfhrgb_est.compute(*cloud2_PFHRGB);
 
 
-	cout<<"compute PFHRGB over"<<endl;
+//	cout<<"compute PFHRGB over"<<endl;
 	pcl::SampleConsensusInitialAlignment<PointT, PointT, pcl::PFHRGBSignature250> sac_ia;
 	sac_ia.setInputSource(cloud2);
 	sac_ia.setSourceFeatures(cloud2_PFHRGB);
